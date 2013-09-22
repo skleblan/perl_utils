@@ -26,6 +26,10 @@ my %userdata;
 my @userpids;
 my $mytty;
 
+################################
+# EXECUTE W CMD
+################################
+
 open WDATA, "w|";
 @wlines = <WDATA>;
 close WDATA;
@@ -35,6 +39,10 @@ print "boom\n";
 print "splash\n";
 
 #whatis splash
+
+#################################
+# COUNT NUMBER OF USERS
+#################################
 
 $numusers = 0;
 for($i = 0; $i < scalar @wlines; $i++)
@@ -48,6 +56,10 @@ for($i = 0; $i < scalar @wlines; $i++)
 ####################
 #check for screen (not necessarily here)
 ####################
+
+####################################
+# CONSTRUCT NAME-TTY RELATIONSHIPS
+####################################
 
 print "$numusers users found\n";
 
@@ -64,6 +76,10 @@ for($i = 0; $i < $numusers; $i++)
         print "pushed...\n";
     }
 }
+
+#####################################
+# POPULATE PROCESS LIST PER USER
+##################################### 
 
 for($i = 0; $i < $numusers; $i++)
 {
@@ -86,15 +102,18 @@ for($i = 0; $i < $numusers; $i++)
     $temp1->{'pidlist'} = [@userpids];
 }
 
-open MYTTY, "tty |";
-$mytty = <MYTTY>;
-close MYTTY;
-$mytty =~ s/^\/dev//;
-
+################################
+# DETERMINE WHAT TTY THIS PROGRAM IS RUNNING ON
+################################
+open MYTTY, "tty |"; $mytty = <MYTTY>; close MYTTY; $mytty =~ s/^\/dev//; 
 
 #can't literally have an array of hashes
 #can have an array of references to hashes
 #[] and {} are array and hash constructors respectively. they are guarunteed to allocate new memory
+
+#########################
+# PRINT OUT
+#########################
 
 print "Output from w\n";
 print "====================\n";
@@ -119,5 +138,13 @@ for($i = 0; $i < $numusers; $i++)
         }
     }
 }
+
+########################################
+# SETUP COMMAND MENU
+########################################
+
+#pid (list), tty (list), user, allexceptme, all
+
+#use "ps <pid> | grep <pid>"
 
 exit(0);
