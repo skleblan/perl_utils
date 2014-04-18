@@ -99,23 +99,31 @@ if(!(defined($message_file) && length($message_file) > 0))
     #execute vim
     system "vim /tmp/sendmail-wrapper.usrmsg";
 
-    #grab message
+    #open message
     open FINISHEDFILE, "/tmp/sendmail-wrapper.usrmsg";
-    @temp_lines = <FINISHEDFILE>;
-    close FINISHEDFILE;
+}
+else
+{
+    #open what was passed in as an argument
+    open FINISHEDFILE, $message_file;
+}
 
-    #parse message
-    for(my $i = 0; $i <= $#temp_lines; $i++)
+#grab message
+@temp_lines = <FINISHEDFILE>;
+close FINISHEDFILE;
+
+#parse message
+for(my $i = 0; $i <= $#temp_lines; $i++)
+{
+    $temp = $temp_lines[$i];
+
+    if($temp !~ /^#/)
     {
-        $temp = $temp_lines[$i];
-
-        if($temp !~ /^#/)
-        {
-        chomp $temp;
-            push @lines_out, "$temp\n";
-        }
+    chomp $temp;
+        push @lines_out, "$temp\n";
     }
 }
+
 #################################
 # CREATE TEMP FILE TO SEND
 #################################
