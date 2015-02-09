@@ -6,7 +6,6 @@
 #==============================================================
 
 my $hour;
-my $program_cmd = "";
 my $time_cmd = "date +%H";
 # %H is hours (00 to 23)
 # %k is hours ( 0 to 23)
@@ -18,13 +17,13 @@ my $time_cmd = "date +%H";
 $hour = `$time_cmd`;
 
 # if the hour is 6 or 7
-if($hour =~ /[67]/)
+if($hour =~ /0[67]/)
 {
     print "not allowed to watch movies between 6am and 8am\n";
 }
 else
 {
-    system($program_cmd);
+    system @ARGV;
 }
 
 exit(0);

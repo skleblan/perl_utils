@@ -10,15 +10,20 @@ use strict;
 my $cmd = "uptime";
 my $input;
 
-print "before pipe\n";
-#pipe STDOUT, MYHANDLE;
+# set up pipe to send command (uptime) to handle MYHANDLE
 open MYHANDLE, "$cmd|";
 
+# execute the command as a placebo
+# output sent to terminal. doesn't make it through here
 system $cmd;
+
+# execute the command as the test
+# output comes through this script and is used
 $input = <MYHANDLE>;
 
 chomp($input);
 
+# print results of the test
 print "booga booga:$input\n";
 print "did it work?\n";
 
