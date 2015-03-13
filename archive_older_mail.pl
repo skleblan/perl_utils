@@ -49,27 +49,30 @@ if( $#msg_file_names  < 0 )
 ##################################
 #$cur_msg_file_name
 
-open CUR_MSG, $cur_msg_file_name;
-@lines = <CUR_MSG>;
-close CUR_MSG;
-
-for $line ( @lines )
+for $cur_msg_file_name ( @msg_file_names )
 {
-#  if( $line =~ /^Date:\s/ )
-#  {
-#    $hash_list{$cur_msg_file_name} = $line;
-#    break;
-#  }
-  if( $line =~ /From\s\S+\@\S\s\w{3}\s---/ )
+  open CUR_MSG, $cur_msg_file_name;
+  @lines = <CUR_MSG>;
+  close CUR_MSG;
+
+  for $line ( @lines )
   {
-    $frmtd_dates{$cur_msg_file_name} = $line;
-    break;
+#  if( $line =~ /^Date:\s/ )
+    if( $line =~ /From\s\S+\@\S\s\w{3}\s---/ )
+    {
+      $frmtd_dates{$cur_msg_file_name} = $line;
+      break;
+    }
   }
 }
 
 ######################################
 # call a subroutine fo format the dates
 ######################################
+for $key ( keys %frmtd_dates )
+{
+  $plain_date{$key} = date_to_plain_num( $frmtd_dates{$key} );
+}
 
 ##################################
 # create folders foreach month of each year
@@ -80,3 +83,10 @@ for $line ( @lines )
 # but only create a directory if there's a message
 # to put in it
 ##################################
+
+sub date_to_plain_num
+{
+my $formated_date;
+
+$formated_date = 
+}
