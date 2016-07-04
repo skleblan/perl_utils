@@ -161,24 +161,24 @@ exit(0);
 ############################################################
 sub printhelp
 {
-    print "$0 - steps through the process of using sendmail on outgoing messages\n\n";
+    print "\n$0\n\tsteps through the process of using sendmail on outgoing messages\n\n";
     
-    print "Usage: $0 [-h] [-f] [-t <dest address>] [-m <message file>]\n\n";
+    print "Usage: \n\t$0 [-h] [-f] [-t <dest addr>] [-m <msg file>]\n\n\n";
     
-    print "if no arguments are passed in, the program will prompt the user for all";
-    print " of the necessary details.  The program defaults the sending email address";
-    print " to be $sending_email_addr.  The program will set the subject to \"Automatic";
-    print " E-mail\".\n\n"
+    print "If no arguments are passed in, the program will prompt the user ";
+    print "for all of the necessary details.  The program defaults the ";
+    print "sending email address to be $sending_email_address.r  The program ";
+    print "will set the subject to \"Automatic E-mail\".\n\n\n";
     
-    print "-t <dest address> - pass in a destination address (the -t stands for ";
-    print "the TO field)\n";
-    print "-m <message file> - pre-existing message file that will be sent (the -m";
-    print "stands for the MESSAGE field)\n";
-    print "-f                - Force option. Will skip the final confirmation that's";
-    print "prompted just before the message is sent\n";
+    print "-t <dest address> - pass in a destination address (the -t stands ";
+    print "for the TO field)\n";
+    print "-m <message file> - pre-existing message file that will be sent (";
+    print "the -m stands for the MESSAGE field)\n";
+    print "-f                - Force option. Will skip the final confirmation ";
+    print "that's prompted just before the message is sent\n";
     print "-h                - Display help message and exit\n\n";
     
-    print "Made by Steven Keller LeBlanc. 2014.\n"
+    print "Made by Steven Keller LeBlanc. 2014.\n";
     print "\n";
     return;
 }
