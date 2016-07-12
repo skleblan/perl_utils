@@ -4,9 +4,10 @@ use strict;
 use warnings;
 
 my ($from, $to, $subject, $shown);
+my ($plain_pass, $hash_pass, $hash_from);
 my (@header_lines, @data_lines, @temp_lines);
-my $mailserver = "localhost";
-my $portnumber = 25;
+my $mailserver = "smtp.gmail.com";
+my $portnumber = 465;
 
 #check for -h
 if( $#ARGV > -1 && $ARGV[0] =~ /-h/ )
@@ -16,14 +17,23 @@ if( $#ARGV > -1 && $ARGV[0] =~ /-h/ )
 }
 
 #get from
-print "enter your email address (FROM):\n";
-$from = <STDIN>;
-chomp $from;
+print "enter your email address (FROM): yellowcarpetmen\@gmail.com\n";
+#$from = <STDIN>;
+#chomp $from;
+$from = "yellowcarpetmen\@gmail.com";
+$hash_from = encode_base64($from);
+
+#get password
+print "enter the password for $from: ";
+$plain_pass = <STDIN>;
+chomp $plain_pass;
+$hash_pass = encode_base64($plain_pass);
 
 #get to
-print "enter the recipient's email address (TO):\n";
-$to = <STDIN>;
-chomp $to;
+print "enter the recipient's email address (TO): skleblan\@gmail.com\n";
+#$to = <STDIN>;
+#chomp $to;
+$to = "skleblan\@gmail.com";
 
 #get subject
 print "enter the subject of the email:\n";
@@ -76,6 +86,10 @@ for(my $i = 0; $i <= $#temp_lines; $i++)
 #------------------------------------
 print "opening connection to $mailserver\n";
 
+open WRITENC, ">./smtp-wrapper.tmplog";
+
+pipe READNC, WRITENC, "openssl s_client -connect $mailserver:$portnumber -crlf\n" or die("couldn't open the openssl s_client to $mailserver on $portnumber\n");
+
 my $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
@@ -91,10 +105,40 @@ $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
     {
-    die("error from $mailserver on port $portnumber:\n$response\n");
+    die("error after saying HELO from $mailserver on port $portnumber:\n$response\n");
     }
 
-print "specifying destination server\n";
+print "authenticating\n";
+
+print WRITENC "AUTH LOGIN\n";
+$response = <READNC>;
+chomp $response;
+if($response !~ /^3\d\d/ ) #expecting a 300-code after this request
+    {
+    die("error after saying AUTH LOGIN from $mailserver on port $portnumber:\n$response\n");
+    }
+
+print "entering $hash_from as username $from\n";
+
+print WRITENC $hash_from."\n";
+$response = <READNC>;
+chomp $response;
+if($response !~ /^3\d\d/ ) #expecting a 300-code after this request
+{
+    die("error after entering username from $mailserver on $portnumber:\n$response\n");
+}
+
+print "entering password\n";
+
+print WRITENC $hash_pass."\n";
+$response = <READNC>;
+chomp $response;
+if($response !~ /^2\d\d/ ) #not sure if i'm expecting 200 or 300
+{
+    die("error after entering password from $mailserver on $portnumber:\n$response\n");
+}
+
+print "specifying who is sending the mail\n";
 
 #send "from"
 print WRITENC "MAIL FROM:<$from>\n";
@@ -102,7 +146,7 @@ $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
     {
-    die("error from $mailserver on port $portnumber:\n$response\n");
+    die("error after saying MAIL FROM from $mailserver on port $portnumber:\n$response\n");
     }
 
 print "writing source email address\n";
@@ -113,7 +157,7 @@ $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
     {
-    die("error from $mailserver on port $portnumber:\n$response\n");
+    die("error after saying RCPT TO from $mailserver on port $portnumber:\n$response\n");
     }
 
 print "writing destination email address\n";
@@ -124,7 +168,7 @@ $response = <READNC>;
 chomp $response;
 if($response !~ /^[23]\d\d/ )
     {
-    die("error from $mailserver on port $portnumber:\n$response\n");
+    die("error after saying DATA from $mailserver on port $portnumber:\n$response\n");
     }
 
 print "sent command to start sending data message\n";
@@ -152,7 +196,7 @@ $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
     {
-    die("error from $mailserver on port $portnumber:\n$response\n");
+    die("error after posing a period from $mailserver on port $portnumber:\n$response\n");
     }
 
 print "data message successfully sent\n";
@@ -163,7 +207,7 @@ $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
     {
-    die("error from $mailserver on port $portnumber:\n$response\n");
+    die("error after sending QUIT from $mailserver on port $portnumber:\n$response\n");
     }
 
 print "sending quit command\n";
