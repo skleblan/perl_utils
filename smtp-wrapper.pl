@@ -3,8 +3,8 @@
 use strict;
 use warnings;
 
-my $from, $to, $subject, $shown;
-my @header_lines, @data_lines, @temp_lines;
+my ($from, $to, $subject, $shown);
+my (@header_lines, @data_lines, @temp_lines);
 my $mailserver = "localhost";
 my $portnumber = 25;
 
@@ -56,6 +56,8 @@ close USERDATA;
 #compile data
 for(my $i = 0; $i <= $#temp_lines; $i++)
 {
+    my $temp;
+
     $temp = $temp_lines[$i];
     chomp $temp;
     if($temp !~ /^#/ )
@@ -74,48 +76,58 @@ for(my $i = 0; $i <= $#temp_lines; $i++)
 #------------------------------------
 print "opening connection to $mailserver\n";
 
-$response = <READNC>;
+my $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
+    {
     die("error from $mailserver on port $portnumber:\n$response\n");
-else
-    print "connection opened successfully\n";
+    }
+
+print "connection opened successfully\n";
 
 #send destination server
-print WRITENC "HELO $dest_server\n";
+print WRITENC "HELO $mailserver\n";
 $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
+    {
     die("error from $mailserver on port $portnumber:\n$response\n");
-else
-    print "specifying destination server\n";
+    }
+
+print "specifying destination server\n";
 
 #send "from"
 print WRITENC "MAIL FROM:<$from>\n";
 $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
+    {
     die("error from $mailserver on port $portnumber:\n$response\n");
-else
-    print "writing source email address\n";
+    }
+
+print "writing source email address\n";
 
 #send "to"
 print WRITENC "RCPT TO:<$to>\n";
 $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
+    {
     die("error from $mailserver on port $portnumber:\n$response\n");
-else
-    print "writing destination email address\n";
+    }
+
+print "writing destination email address\n";
 
 #send data cmd
 print WRITENC "DATA\n";
 $response = <READNC>;
 chomp $response;
 if($response !~ /^[23]\d\d/ )
+    {
     die("error from $mailserver on port $portnumber:\n$response\n");
-else
-    print "sent command to start sending data message\n";
+    }
+
+print "sent command to start sending data message\n";
 
 #send data header
 #to,from if desired
@@ -127,7 +139,7 @@ if($shown)
     push @header_lines, "To: <$to>\n";
 }
 push @header_lines, "Subject: $subject\n";
-push @header_lines, date??."\n";
+push @header_lines, localtime()."\n";
 push @header_lines, "\n";
 print WRITENC @header_lines;
 
@@ -139,24 +151,30 @@ print WRITENC ".\n";
 $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
+    {
     die("error from $mailserver on port $portnumber:\n$response\n");
-else
-    print "data message successfully sent\n";
+    }
+
+print "data message successfully sent\n";
 
 #send quit command
 print WRITENC "QUIT\n";
 $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
+    {
     die("error from $mailserver on port $portnumber:\n$response\n");
-else
-    print "sending quit command\n";
+    }
+
+print "sending quit command\n";
 
 #final report back to user and delete temp files
 $response = <READNC>;
 chomp $response;
 if($response !~ /^2\d\d/ )
+    {
     die("error from $mailserver on port $portnumber:\n$response\n");
+    }
 
 close WRITENC;
 close READNC;
