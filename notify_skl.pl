@@ -15,7 +15,6 @@ my $datetime = `date`;
 
 my $command = "perl /home/steven/bin/sendmail-wrapper.pl -f -t $phone -m $msg_loc";
 
-#################################
 # SETUP HOOK FOR CANCELLING HERE
 #################################
 $SIG{'INT'} = "INT_handler";
