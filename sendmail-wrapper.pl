@@ -167,8 +167,8 @@ sub printhelp
     
     print "if no arguments are passed in, the program will prompt the user for all";
     print " of the necessary details.  The program defaults the sending email address";
-    print " to be $sending_email_addr.  The program will set the subject to \"Automatic";
-    print " E-mail\".\n\n"
+    print " to be $sending_email_address.  The program will set the subject to \"Automatic";
+    print " E-mail\".\n\n";
     
     print "-t <dest address> - pass in a destination address (the -t stands for ";
     print "the TO field)\n";
@@ -178,7 +178,7 @@ sub printhelp
     print "prompted just before the message is sent\n";
     print "-h                - Display help message and exit\n\n";
     
-    print "Made by Steven Keller LeBlanc. 2014.\n"
+    print "Made by Steven Keller LeBlanc. 2014.\n";
     print "\n";
     return;
 }
