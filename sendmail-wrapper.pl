@@ -12,7 +12,22 @@ my $response;
 my @lines_out;
 my @temp_lines;
 
+my @whereis_lines;
+my $whereis_text;
+
 #TODO: need to make sure that sendmail is install and running
+
+open WHEREISPIPE, "whereis sendmail |";
+@whereis_lines = <WHEREISPIPE>;
+close WHEREISPIPE;
+$whereis_text = join(" ", @whereis_lines);
+$whereis_text =~ s/^sendmail:\s?//;
+chomp($whereis_text);
+if(length($whereis_text) == 0)
+{
+  print "Error: sendmail is not installed on this machine\n";
+  exit(-1);
+}
 
 #TODO: delete temporary files after message has been sent
 
