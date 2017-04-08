@@ -11,11 +11,19 @@ my $server = "localhost";
 my $port = "22";
 my $username = "steven";
 my $password = `cat ssh.pass`;
+chomp $password;
 my $command = "df -h";
 
 print "init complete\n";
+#print "password is \"$password\"\n";
 
-my $ssh = Net::SSH::Perl->new($server, port=>$port);
+#specify an empty array REFERENCE to dis-allow pub-key auth.
+my $ssh = Net::SSH::Perl->new($server, port=>$port, identity_files=>[]);
+
+#debug=>1 turns on debug messages
+
+#did not work for stopping Public Key Authentication, but useful to have
+#options=>["PubkeyAuthentication=no", "PreferredAuthentications=keyboard-interactive,password"]);
 
 print "setup ssh object\n";
 
