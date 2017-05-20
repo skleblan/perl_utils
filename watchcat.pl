@@ -7,6 +7,7 @@ chomp $datetime;
 $this_file = $0;
 #$this_file = split( $this_file, "\/");
 $seconds = 30;
+$user = $ENV{"LOGNAME"};
 
 $SIG{$signal} = \&feeding;
 
@@ -50,10 +51,25 @@ else
   if(length($tty) > 0)
   {
     open LOGFILE, ">>$logpath" or die("can't open log");
-    print LOGFILE "steven logged in at $datetime on tty $tty\n";
+    print LOGFILE "$user kicked off $datetime on $tty\n";
     close LOGFILE;
 
     print "\nyou did not feed the cat.\nyou have been kicked off\n";
+
+    $tty =~ s/^.dev.//;
+
+    open PS_GREP_PROC, "ps -ef | grep sshd |";
+    @ps_grep_lines = <PS_GREP_PROC>;
+    close PS_GREP_PROC;
+
+    foreach (@ps_grep_lines)
+    {
+      if( $_ =~ /^$user\s+(\d+).*sshd.*$user\@$tty.*/ )
+      {
+        system("kill $1");
+        break;
+      }
+    }
   }
 }
 
@@ -61,7 +77,7 @@ sub feeding
 {
   $datetime = `date`;
   open LOGFILE, ">>$logpath" or die("can't open log");
-  print LOGFILE "steven fed the cat at $datetime\n";
+  print LOGFILE "$user fed cat at $datetime\n";
   close LOGFILE;
 
   print "\nThe cat has been fed\n";
