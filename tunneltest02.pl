@@ -3,12 +3,56 @@
 use warnings;
 use strict;
 
-use Net::OpenSSH;
+my $cmd = shift;
 
-my $host = "bravo";
-my $key_path = $ENV{"HOME"}."/.ssh/id_rsa";
+if($cmd =~ /start/)
+{
 
-my $ssh = Net::OpenSSH->new($host, key_path=>$key_path, master_ops=>[-o=>"RemoteForward 22222 sdf.org:22"]);
-$ssh->error and die "Couldn't establish SSH connection. ".$ssh->error;
+  $SIG{"USR1"} = \&close_ssh;
+  die "Error. SSH Agent is not running" if !is_running_ssh_agent();
 
-while(1){}
+  system("ssh -fNT -L 22222:skleblan.freeshell.org:80 bravo");
+  while(1){}
+
+  exit(-1);
+}
+elsif($cmd =~ /stop/)
+{
+  exit(-1);
+
+  #TODO: finish implementation
+
+  my @ps_lines;
+  open PSPIPE, "ps -ef | grep $0 |";
+  @ps_lines = <PSPIPE>;
+  close PSPIPE;
+
+  exit(0);
+}
+
+sub close_ssh
+{
+  exit(0);
+}
+
+sub is_running_ssh_agent
+{
+  my $check_cmd = "ssh-add -l";
+  open AGENTPIPE, "$check_cmd|";
+  my @lines_out = <AGENTPIPE>;
+  close AGENTPIPE;
+
+  foreach (@lines_out)
+  {
+    if ($_ =~ /Could\snot\sopen\sa\sconnection\sto\syour\sauthentication\sagent/)
+    {
+      return 0;
+    }
+    elsif ($_ =~ /The\sagent\shas\sno\sidentities/)
+    {
+      return 0;
+    }
+  }
+
+  return 1;
+}
