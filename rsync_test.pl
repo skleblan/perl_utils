@@ -3,7 +3,7 @@ use warnings;
 use strict;
 
 #create test sandbox
-my $rootdir = "rsyncsandbox";
+my $rootdir = $ENV{"HOME"}."/rsyncsandbox";
 #my $pathtoroot = $ENV{"PWD"};
 
 chdir $ENV{"HOME"};
@@ -36,6 +36,10 @@ sub run_test_01
   }
 
   chdir $rootdir;
+  #Currently, this copies the whole directory (including the dir itself)
+  #into the destination.
   system("rsync -av $test_dir_src $test_dir_dest");
-
+  #-a uses the archive option which is a combination of -r, -l, -p, -t,
+  #    -g, -o, -D.  This is a very useful option
+  #-v uses the verbose mode.
 }
