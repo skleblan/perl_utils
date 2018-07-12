@@ -116,3 +116,18 @@ sub run_test_04
   #the enclosing folder
   system("rsync -av $test_dir_src/ $test_dir_dest/");
 }
+
+sub run_test_05
+{
+  my $srcdir = "test_05_1_src";
+  my $destdir = "test_05_2_dest";
+  mkdir $srcdir unless -e $srcdir;
+  mkdir $destdir unless -e $destdir;
+
+  chdir $srcdir;
+
+  foreach("alpha", "bravo", "charlie")
+  {
+    system "echo $_ > $_.txt";
+  }
+  chdir $rootdir;
