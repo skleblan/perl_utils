@@ -22,6 +22,7 @@ chdir $rootdir;
 &run_test_03();
 &run_test_04();
 
+&run_test_05();
 #investigate --bwlimit for rsync
 
 exit(0);
@@ -130,4 +131,35 @@ sub run_test_05
   {
     system "echo $_ > $_.txt";
   }
+  chmod 0, "alpha.txt";
+
   chdir $rootdir;
+
+  my $retval = system("rsync -av $srcdir/ $destdir/");
+  if( $retval != 0 )
+  {
+    my $retval01 = $retval >> 8;
+    my $retval02 = $retval & 0x8f;
+    my $errcode = $!;
+    my $errmsg = $?;
+    print "run_test_05\n";
+    print "system retval $retval\n";
+    print "  retval 01 $retval01\n";
+    print "  retval 02 $retval02\n";
+    print "exclamation $errcode\n";
+    print "question $errmsg\n";
+  }
+
+}
+
+sub get_system_err_code
+{
+  my $code = shift;
+  #the code expected as input can be retieved
+  #either from the system() return value
+  #or from $? immediately after execution
+
+  #shift over to get the return code of
+  #the child process
+  return $code >> 8;
+}
