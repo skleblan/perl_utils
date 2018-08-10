@@ -1,8 +1,8 @@
-#/usr/bin/perl
+#!/usr/bin/perl
 
-use MyTestObject;
+use MyScratchObject;
 
-my $uut = MyTesObject->new;
+my $uut = MyScratchObject->new;
 
 print $uut->getinteger." default\n";
 

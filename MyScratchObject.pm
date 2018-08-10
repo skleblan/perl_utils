@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 
-package MyTestObject;
-use parent 'Exporter';
-our $VERSION = "0.01";
+package MyScratchObject;
+use parent qw(Exporter);
+#our $VERSION = "0.01";
 
 sub new
 {
@@ -18,19 +18,19 @@ sub new
 sub _init
 {
   my $self = shift;
-  $self->priv_int_var = 100;
+  $self->{priv_int_var} = 100;
 }
 
 sub getinteger
 {
   my $self = shift;
-  return $self->priv_integer_variable;
+  return $self->{priv_integer_variable};
 }
 
 sub setinteger
 {
   my $self = shift;
-  $self->priv_integer_variable = shift;
+  $self->{priv_integer_variable} = shift;
 }
 
 1;
