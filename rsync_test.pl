@@ -15,15 +15,18 @@ if(not -e $rootdir)
 die "cannot create sandbox root directory\n" unless -d $rootdir;
 chdir $rootdir;
 
-&run_test_01();
-&run_test_02();
+&run_test_01(); #includes dir
+&run_test_02(); #files only
 
 #test un-recognized files in destination
-&run_test_03();
-&run_test_04();
+&run_test_03(); #includes dir
+&run_test_04(); #files only
+#without delete option, rsync leaves them alone
 
-&run_test_05();
-#investigate --bwlimit for rsync
+#test file with restrictive permissions
+&run_test_05(); #files only
+
+#TODO: investigate --bwlimit for rsync
 
 exit(0);
 
