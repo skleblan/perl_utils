@@ -22,4 +22,13 @@ print "scheme u3 ".$u3->scheme."\n";
 print "opaque u3 ".$u3->opaque."\n";
 print "path u3 ".$u3->path."\n";
 print "fragment u3 ".$u3->fragment."\n";
+print "host u3 ".$u3->host."\n";
 
+$u4 = URI->new("http://en.wikipedia.org/wiki/coffee");
+$u5 = URI->new_abs("http://random.org/wiki/panama_canal", $u4->host);
+$u5->host($u4->host);
+$u6 = URI->new_abs("http://random.org/wiki/iron_man", $u4->host);
+print "\n";
+print "u4 $u4\n";
+print "u5 $u5\n";
+print "u6 $u6\n";

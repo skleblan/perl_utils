@@ -20,10 +20,26 @@ my $end_url = "";
 my $current_url = $start_url;
 my $max_jumps = 20;
 my $jump_count = 0;
+my @jumps;
 
 my $ua = LWP::UserAgent->new;
 
 while($current_url ne $end_url and $jump_count < $max_jumps)
 {
   my $response = $ua->get($current_url);
+  push @jumps = $current_url;
+  $jump_count++;
+  if($response->is_success)
+  {
+    my $tree = HTML::TreeBuilder->new;
+    $tree->parse($response->content);
+    $tree->eof;
+
+    my $prospective_link;
+
+    foreach $link ($tree->extract_links)
+    {
+      #
+    }
+  }
 }
