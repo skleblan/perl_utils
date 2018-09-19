@@ -15,10 +15,15 @@ die "program not finished\n";
 # https://en.m.wikipedia.org/wiki/Iron_Man
 #
 
-my $start_url = "";
-my $end_url = "";
+my $base_url = "en.wikipedia.org";
+my $start_url = URI->new("");
+my $end_url = URI->new("");
+
+die "all urls must be for wikipedia\n" unless $start_url->base eq $base_url;
+die "all urls must be for wikipedia\n" unless $end_url->base eq $base_url;
+
 my $current_url = $start_url;
-my $max_jumps = 20;
+my $max_jumps = 40;
 my $jump_count = 0;
 my @jumps;
 
@@ -26,6 +31,8 @@ my $ua = LWP::UserAgent->new;
 
 while($current_url ne $end_url and $jump_count < $max_jumps)
 {
+  sleep 3; #dont spam the wikipedia web server
+
   my $response = $ua->get($current_url);
   push @jumps = $current_url;
   $jump_count++;
@@ -37,9 +44,33 @@ while($current_url ne $end_url and $jump_count < $max_jumps)
 
     my $prospective_link;
 
-    foreach $link ($tree->extract_links)
+    foreach my $link ($tree->find_by_tag_name("a"))
     {
-      #
-    }
-  }
+      my $cur_url = URI->new($link->attr("href"));
+
+      if($cur_url and $cur_url->host ne $base_url)
+      { next; }
+
+      if(not $cur_url->host)
+      { $cur_url->host($base_url); }
+
+      if(not defined $prospective_link);
+      {
+        $prospective_link = $cur_url;
+      }
+
+      if($cur_url eq $end_url)
+      {
+        $prospective_link = $cur_url;
+        last;
+      }
+    }#end loop thru links on cur page
+
+    $current_url = $prospective_link;
+  }#end HTTP 200
 }
+
+#print jump list
+foreach my $hop (@jumps)
+{ print $hop."\n"; }
+
