@@ -42,18 +42,15 @@ while($current_url ne $end_url and $jump_count < $max_jumps)
     $tree->parse($response->content);
     $tree->eof;
 
+    my @links = $tree->find_by_tag_name("a");
     my $prospective_link;
 
+    my @combo = map { {elmnt=>$_} } @links;
+    map { $_->{url} = URI->new($_->{elmnt}->attr("href")) } @combo;
+    map { ($_->{url}->host ? : $_->{url}->host($base_url)) } @combo;
+    @combo = grep { $_->{url}->host eq $base_url } @combo;
     foreach my $link ($tree->find_by_tag_name("a"))
     {
-      my $cur_url = URI->new($link->attr("href"));
-
-      if($cur_url and $cur_url->host ne $base_url)
-      { next; }
-
-      if(not $cur_url->host)
-      { $cur_url->host($base_url); }
-
       if(not defined $prospective_link);
       {
         $prospective_link = $cur_url;
