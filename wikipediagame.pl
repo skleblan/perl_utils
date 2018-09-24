@@ -49,22 +49,33 @@ while($current_url ne $end_url and $jump_count < $max_jumps)
     map { $_->{url} = URI->new($_->{elmnt}->attr("href")) } @combo;
     map { ($_->{url}->host ? : $_->{url}->host($base_url)) } @combo;
     @combo = grep { $_->{url}->host eq $base_url } @combo;
-    foreach my $link ($tree->find_by_tag_name("a"))
-    {
-      if(not defined $prospective_link);
-      {
-        $prospective_link = $cur_url;
-      }
 
-      if($cur_url eq $end_url)
-      {
-        $prospective_link = $cur_url;
-        last;
-      }
-    }#end loop thru links on cur page
+    @combo = grep { $_->{url}->path =~ /^\/?wiki/ } @combo;
+
+    if(scalar(@combo) > 0)
+    {
+      $pospective_link = $combo[0]->{url};
+
+      my $exact_match = pop (grep {$_->{url} eq $end_url} @combo);
+
+      if(defined $exact_match)
+      { $prospective_link = $exact_match;}
+
+    }
 
     $current_url = $prospective_link;
   }#end HTTP 200
+  else
+  { die "error occurred talking to web server\n";}
+
+  if($promptuser)
+  {
+    print "do you want to (h)op to $current_url or (a)bort?\n:";
+    my $contresp = <STDIO>;
+    chomp $contresp;
+    if(!$contresp or $contresp !~ /^h$/)
+    { die "user aborted\n"; }
+  }
 }
 
 #print jump list
