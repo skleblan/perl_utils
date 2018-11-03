@@ -11,6 +11,21 @@ my $path = shift @ARGV;
 die "path doesnt exist\n" unless -e $path;
 die "path is not a directory\n" unless -d $path;
 
+my @desiredtaglist = (
+          'FileName',
+          'FileSize',
+          'FileType',
+          'FileTypeExtension',
+          'MIMEType',
+          'ImageWidth',
+          'ImageHeight',
+          'ImageSize',
+          'VideoFrameRate',
+          'TrackDuration',
+          'MediaDuration',
+          'Duration',
+          'AudioFormat'
+);
 chdir $path;
 
 opendir DIRH, ".";
@@ -22,15 +37,33 @@ while($temp = readdir DIRH)
 }
 closedir DIRH;
 
-open OUTH, ">exifresults.txt" or die $!;
+sub filterdesiredtags
+{
+  my $hashref = shift;
+  die "not ref to a hash" unless ref $hashref;
+  foreach my $k (keys(%$hashref))
+  {
+    my $save = (scalar( grep { $k eq $_ } @desiredtaglist ) > 0);
+
+    next if ($save);
+ 
+    delete $hashref->{$_};
+  }
+}
+
+my $outfile = "exif.csv";
+
+open OUTH, ">$outfile" or die $!;
 
 foreach (@diritems)
 {
   next if not -f $_;
   next if $_ =~ /.+\.txt$/;
   my $taglist = ImageInfo($_);
-  my $tempstr = Dumper($taglist);
-  print OUTH $tempstr;
+  filterdesiredtags($taglist);
+  my $tempstr;# = Dumper($taglist);
+  $tempstr = join(",", map { $taglist->{$_}; } @desiredtaglist);
+  print OUTH $tempstr."\r\n";
 }
 
 close OUTH;
