@@ -1,0 +1,5 @@
+https://docstore.mik.ua/orelly/java-ent/jnut/index.htm
+https://docstore.mik.ua/orelly/java/langref/index.htm
+https://docstore.mik.ua/orelly/java/awt/index.htm
+https://docstore.mik.ua/orelly/java/fclass/index.htm
+https://docstore.mik.ua/orelly/java/exp/index.htm
