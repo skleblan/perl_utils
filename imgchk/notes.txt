@@ -8,8 +8,14 @@ methods
  - avg_threshold
  - image
 
-other ideas
-straight md5 or sha1 checksum
-phash??
-SIFT
+Image::Filter
+(blur, channel, edge, emboss, eraseline, floyd, foo, gaussian, greyscale, invert, level, oilify, pizelize, posterize, ripple, rotate, sharpen, solarize, swirl, twirl)
+
+other ideas 
+ - straight md5 or sha1 checksum
+ - phash?? (good for scaling)
+ - SIFT (good for cropped/rotation/lighting)
+
+(https://stackoverflow.com/questions/843972/image-comparison-fast-algorithm)
+
 
