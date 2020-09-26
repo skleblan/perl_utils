@@ -1,0 +1,15 @@
+
+Image::Compare
+
+methods
+ - exact
+ - threshold
+ - threshold_count
+ - avg_threshold
+ - image
+
+other ideas
+straight md5 or sha1 checksum
+phash??
+SIFT
+
