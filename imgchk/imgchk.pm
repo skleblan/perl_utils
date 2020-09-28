@@ -20,6 +20,9 @@ package imgchk;
 use strict;
 use warnings;
 use Digest::MD5;
+use Image::Hash;
+use File::Slurp;
+use GD;
 use Carp;
 
 sub is_same
@@ -65,7 +68,18 @@ sub _is_same_checksum
 
 sub _is_same_phash
 {
-  return 0;
+  my $file1 = shift;
+  my $file2 = shift;
+
+  my $img = read_file($file1, binmode => ':raw');
+  my $ihash1 = Image::Hash->new($img, "GD");
+  my $phash1 = $ihash1->phash;
+
+  $img = read_file($file2, binmode => ':raw');
+  my $ihash2 = Image::Hash->new($img, "GD");
+  my $phash2 = $ihash2->phash;
+
+  return ($phash1 eq $phash2);
 }
 
 sub _is_same_sift
