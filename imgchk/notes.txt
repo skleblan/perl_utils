@@ -19,3 +19,22 @@ other ideas
 (https://stackoverflow.com/questions/843972/image-comparison-fast-algorithm)
 
 
+feb 5, 2021 additions
+
+-->> if we had binary, could compute edit distance??
+https://en.wikipedia.org/wiki/Hamming_distance
+https://en.wikipedia.org/wiki/Levenshtein_distance
+https://www.perlmonks.org/?node_id=245428
+
+-->> to convert hex into binary
+https://stackoverflow.com/questions/51548322/in-perl-how-do-i-count-bits-in-a-bit-vector-which-has-bits-set-higher-than-2-14
+https://stackoverflow.com/questions/13543180/perl-how-do-i-extract-certain-bits-from-a-byte-and-then-covert-these-bits-to-a
+
+-->> from my brain!
+idea(w/ Image::Hash)->can specify smaller geometries in dhash,phash
+
+-->> update
+after my aforementioned idea was implemented, kept getting the following error (times 1000)
+Use of uninitialized value in multiplication (*) at /usr/local/share/perl/5.26.1/Image/Hash.pm line 439.
+is it related to a bug in passing the geometry? (was trying to do 6x6)
+
